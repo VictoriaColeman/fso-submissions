@@ -6,22 +6,29 @@ const Statistics = ({ good, neutral, bad }) => {
   const all = good + bad + neutral
   const average = (good - bad) / all
   const positive = good * 100 / all
-
-  return (
-    <>
-      <h1>statistics</h1>
-      <p>
-        good {good}<br />
-        neutral {neutral}<br />
-        bad {bad}<br />
-        all {all}<br />
-        average {average}<br />
-        positive {positive} %
-      </p>
-    </>
-  )
+  if (all === 0) {
+    return (
+      <>
+        <h1>statistics</h1>
+        <p>No feedback given</p>
+      </>
+    )
+  } else {
+    return (
+      <>
+        <h1>statistics</h1>
+        <p>
+          good {good}<br />
+          neutral {neutral}<br />
+          bad {bad}<br />
+          all {all}<br />
+          average {average}<br />
+          positive {positive} %
+        </p>
+      </>
+    )
+  }
 }
-
 
 const App = () => {
   const [good, setGood] = useState(0)
