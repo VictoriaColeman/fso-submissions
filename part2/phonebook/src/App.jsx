@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Filter from './Components/Filter'
 import Form from './Components/Form'
 import Phonebook from './Components/Phonebook'
-import axios from 'axios'
+import services from './services/persons'
 
 
 const App = () => {
@@ -12,14 +12,15 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => setPersons(response.data))
+    services
+      .getAll()
+      .then(data => setPersons(data))
   }, [])
 
   const handleFilter = event => setFilter(event.target.value)
   const handleNameChange = event => setNewName(event.target.value)
   const handleNumChange = event => setNewNumber(event.target.value)
+
   const addEntry = (event) => {
     event.preventDefault()
     if (persons.some(person => person.name === newName)) {
@@ -29,16 +30,20 @@ const App = () => {
         name: newName,
         number: newNumber,
       }
-      setPersons(persons.concat(newEntry))
+      services
+        .addEntry(newEntry)
+        .then(entry => {
+          setPersons(persons.concat(entry))
+          setNewName('')
+          setNewNumber('')
+        })
     }
-    setNewName('')
-    setNewNumber('')
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Filter filter={filter} eventHandler={handleFilter}/>
+      <Filter filter={filter} eventHandler={handleFilter} />
       <Form name={newName} number={newNumber} handleNameChange={handleNameChange} handleNumChange={handleNumChange} handleSubmit={addEntry} />
       <Phonebook persons={persons} filter={filter} />
     </div>

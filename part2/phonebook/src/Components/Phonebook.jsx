@@ -5,7 +5,7 @@ const Phonebook = ({ persons, filter }) => {
         <>
             <h2>Numbers</h2>
             <div>
-                {entriesToShow.map(person => <div key={person.name}>{person.name} {person.number}</div>)}
+                {entriesToShow.map(person => <div key={person.id}>{person.name} {person.number}</div>)}
             </div>
         </>
     )
