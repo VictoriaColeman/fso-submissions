@@ -21,7 +21,7 @@ const App = () => {
   const handleNameChange = event => setNewName(event.target.value)
   const handleNumChange = event => setNewNumber(event.target.value)
 
-  const addEntry = (event) => {
+  const addEntry = event => {
     event.preventDefault()
     if (persons.some(person => person.name === newName)) {
       window.alert(`${newName} is already added to phonebook`)
@@ -40,12 +40,21 @@ const App = () => {
     }
   }
 
+  const handleDelete = event => {
+    const id = event.target.id
+    const person = persons.find(person => person.id === id)
+    if (window.confirm(`Delete ${person.name}?`)) {
+      services.deleteEntry(id)
+      setPersons(persons.filter(entry => entry.id !== id))
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter filter={filter} eventHandler={handleFilter} />
       <Form name={newName} number={newNumber} handleNameChange={handleNameChange} handleNumChange={handleNumChange} handleSubmit={addEntry} />
-      <Phonebook persons={persons} filter={filter} />
+      <Phonebook persons={persons} handleDelete={handleDelete} filter={filter} />
     </div>
   )
 }

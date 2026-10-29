@@ -18,4 +18,8 @@ const addEntry = (entry) => {
     )
 }
 
-export default { getAll, addEntry }
+const deleteEntry = id => {
+    axios.delete(`${baseUrl}/${id}`)
+}
+
+export default { getAll, addEntry, deleteEntry }
