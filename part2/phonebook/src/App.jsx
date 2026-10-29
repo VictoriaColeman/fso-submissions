@@ -23,8 +23,16 @@ const App = () => {
 
   const addEntry = event => {
     event.preventDefault()
-    if (persons.some(person => person.name === newName)) {
-      window.alert(`${newName} is already added to phonebook`)
+    const repeatEntry = persons.find(person => person.name === newName)
+    if (repeatEntry) {
+      const message = `${newName} is already added to phonebook, replace the old number with new one?`
+      if (window.confirm(message)) {
+        services
+          .updateEntry({ ...repeatEntry, number: newNumber })
+          .then(entry => {
+            setPersons(persons.filter(person => person.id !== repeatEntry.id).concat(entry))
+          })
+      }
     } else {
       const newEntry = {
         name: newName,
@@ -32,12 +40,10 @@ const App = () => {
       }
       services
         .addEntry(newEntry)
-        .then(entry => {
-          setPersons(persons.concat(entry))
-          setNewName('')
-          setNewNumber('')
-        })
+        .then(entry => setPersons(persons.concat(entry)))
     }
+    setNewName('')
+    setNewNumber('')
   }
 
   const handleDelete = event => {

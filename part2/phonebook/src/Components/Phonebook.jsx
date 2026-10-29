@@ -1,4 +1,3 @@
-import services from '../services/persons'
 
 const Phonebook = ({ persons, handleDelete, filter }) => {
     const entriesToShow = persons.filter(person => person.name.toLowerCase().includes(filter))
