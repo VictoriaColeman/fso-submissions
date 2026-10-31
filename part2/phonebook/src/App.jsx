@@ -12,6 +12,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [notification, setNotification] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     services
@@ -30,6 +31,13 @@ const App = () => {
     }, 2000)
   }
 
+  const errorMessage = message => {
+    setError(message)
+    setTimeout(() => {
+      setError(null)
+    }, 2000)
+  }
+
   const addEntry = event => {
     event.preventDefault()
     const repeatEntry = persons.find(person => person.name === newName)
@@ -40,8 +48,13 @@ const App = () => {
           .updateEntry({ ...repeatEntry, number: newNumber })
           .then(entry => {
             setPersons(persons.map( person => person.id === entry.id ? entry : person))
+            notify(`Updated phone number for ${newName}`)
           })
-        notify(`Updated phone number for ${newName}`)
+          .catch(error => {
+            setPersons(persons.filter( person => person.id != repeatEntry.id))
+            errorMessage(`${repeatEntry.name} has already been removed from server`)
+          })
+
       }
     } else {
       const newEntry = {
@@ -61,16 +74,24 @@ const App = () => {
     const id = event.target.id
     const person = persons.find(person => person.id === id)
     if (window.confirm(`Delete ${person.name}?`)) {
-      services.deleteEntry(id)
-      setPersons(persons.filter(entry => entry.id !== id))
-      notify(`Deleted ${person.name}`)
+      services
+        .deleteEntry(id)
+        .then(() => {
+          setPersons(persons.filter(entry => entry.id !== id))
+          notify(`Deleted ${person.name}`)
+        })
+        .catch(error => {
+          setPersons(persons.filter(entry => entry.id !== id))
+          errorMessage(`${person.name} has already been removed from server`)
+        })
     }
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notification} />
+      <Notification message={error} type="error"/>
+      <Notification message={notification} type="message"/>
       <Filter filter={filter} eventHandler={handleFilter} />
       <Form name={newName} number={newNumber} handleNameChange={handleNameChange} handleNumChange={handleNumChange} handleSubmit={addEntry} />
       <Phonebook persons={persons} handleDelete={handleDelete} filter={filter} />

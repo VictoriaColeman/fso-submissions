@@ -18,9 +18,8 @@ const addEntry = (entry) => {
     )
 }
 
-const deleteEntry = id => {
-    axios.delete(`${baseUrl}/${id}`)
-}
+const deleteEntry = id => axios.delete(`${baseUrl}/${id}`)
+
 
 const updateEntry = person => {
     return (
