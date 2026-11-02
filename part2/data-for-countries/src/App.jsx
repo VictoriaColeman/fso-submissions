@@ -7,6 +7,7 @@ import CountryDisplay from './components/CountryDisplay'
 function App() {
   const [filter, setFilter] = useState('')
   const [allData, setAllData] = useState(null)
+  const [country, setCountry] = useState(null)
 
   useEffect(() => {
     services
@@ -15,30 +16,37 @@ function App() {
   }, [])
 
   const countriesToShow = []
-  let country = null
 
-  if (allData) {
+
+  if (allData && !country) {
     for (const i in allData) {
-      if (allData[i].name.common.toLowerCase().includes(filter)) {
+      if (allData[i].name.common.toLowerCase().includes(filter.toLowerCase())) {
         countriesToShow.push({ index: i, name: allData[i].name.common})
-      } else if (allData[i].name.official.toLowerCase().includes(filter)) {
+      } else if (allData[i].name.official.toLowerCase().includes(filter.toLowerCase())) {
         countriesToShow.push({ index: i, name: allData[i].name.official })
       }
     }
     if (countriesToShow.length === 1) {
-      country = countriesToShow[0]
+      setCountry(allData[countriesToShow[0].index])
     }
   }
 
+  const handleInput = event => {
+    setFilter(event.target.value)
+    setCountry(null)
+  }
 
-  const handleInput = event => setFilter(event.target.value)
-
+  const handleShow = event => {
+    setCountry(allData[event.target.id])
+  }
 
   return (
     <>
       <Filter filter={filter} eventHandler={handleInput} />
-      <MatchingCountries countryList={countriesToShow} />
-      <CountryDisplay country={country} allData={allData}/>
+      {country
+        ? <CountryDisplay entry={country}/>
+        : <MatchingCountries countriesToShow={countriesToShow} handleShow={handleShow} />
+      }
     </>
   )
 }

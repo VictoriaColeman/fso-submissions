@@ -1,9 +1,8 @@
 
-const CountryDisplay = ({ country, allData }) => {
-    if (!country) {
+const CountryDisplay = ({ entry }) => {
+    if (!entry) {
         return null
     } else {
-        const entry = allData[country.index]
         const languages = []
         for (const key in entry.languages) {
             languages.push(entry.languages[key])

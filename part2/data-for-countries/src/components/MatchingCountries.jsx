@@ -1,19 +1,20 @@
-
-const MatchingCountries = ({ countryList }) => {
-    if (countryList.length > 10) {
+const MatchingCountries = ({ countriesToShow, handleShow}) => {
+    if (countriesToShow.length > 10) {
         return (
             <div>
                 Too many matches, specify another filter
             </div>
         )
-    } else if (countryList.length > 1 && countryList.length <= 10) {
+    } else if (countriesToShow.length > 1 && countriesToShow.length <= 10) {
         return (
             <div>
-                {countryList.map(country => <div key={country.index}>{country.name}</div>)}
+                {countriesToShow.map(country => {return (
+                    <div key={country.index}>
+                        {country.name} <button onClick={handleShow} id={country.index}>Show</button>
+                    </div>
+                )})}
             </div>
         )
-    } else {
-        return null
     }
 }
 
