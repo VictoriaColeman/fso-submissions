@@ -4,20 +4,30 @@ import services from './services/countries'
 import MatchingCountries from './components/MatchingCountries'
 import CountryDisplay from './components/CountryDisplay'
 
+const api_key = import.meta.env.VITE_WEATH_KEY
+
 function App() {
   const [filter, setFilter] = useState('')
   const [allData, setAllData] = useState(null)
   const [country, setCountry] = useState(null)
+  const [weather, setWeather] = useState(null)
 
   useEffect(() => {
     services
-      .getAll()
+      .getAllCountries()
       .then(data => setAllData(data))
   }, [])
 
+  useEffect(()=> {
+    if (country) {
+      services
+        .getWeather(country, api_key)
+        .then(data => setWeather(data))
+    }
+  }, [country])
+
+
   const countriesToShow = []
-
-
   if (allData && !country) {
     for (const i in allData) {
       if (allData[i].name.common.toLowerCase().includes(filter.toLowerCase())) {
@@ -34,6 +44,7 @@ function App() {
   const handleInput = event => {
     setFilter(event.target.value)
     setCountry(null)
+
   }
 
   const handleShow = event => {
@@ -43,8 +54,8 @@ function App() {
   return (
     <>
       <Filter filter={filter} eventHandler={handleInput} />
-      {country
-        ? <CountryDisplay entry={country}/>
+      {country && weather
+        ? <CountryDisplay entry={country} weather={weather}/>
         : <MatchingCountries countriesToShow={countriesToShow} handleShow={handleShow} />
       }
     </>
