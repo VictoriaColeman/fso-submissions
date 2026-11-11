@@ -68,6 +68,22 @@ app.post('/api/persons', (request, response) => {
             error: 'empty entry'
         })
     }
+    
+    const repeatName = persons.find(p => p.name === request.body.name)
+
+    if (!request.body.name) {
+        return response.status(400).json({
+            error: 'name missing'
+        })
+    } else if (!request.body.number) {
+        return response.status(400).json({
+            error: 'number missing'
+        })
+    } else if (repeatName) {
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
+    }
 
     const person = {
         id: generateId(),
