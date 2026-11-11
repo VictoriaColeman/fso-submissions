@@ -44,12 +44,38 @@ app.get('/api/persons/:id', (request, response) => {
     } else {
         response.status(404).end()
     }
+})
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = request.params.id
     persons = persons.filter(p => p.id !== id)
     response.status(204).end()
 })
+
+const generateId = () => {
+    let id
+    do {
+        id = Math.floor(Math.random() * 1000000)
+    } while (persons.find(p => p.id === id))
+
+    return String(id)
+}
+
+app.post('/api/persons', (request, response) => {
+
+    if (!request.body) {
+        return response.status(400).json({
+            error: 'empty entry'
+        })
+    }
+
+    const person = {
+        id: generateId(),
+        name: request.body.name,
+        number: request.body.number
+    }
+    persons = persons.concat(person)
+    response.json(person)
 
 })
 
